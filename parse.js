@@ -35,8 +35,8 @@ for await (const line of rl) {
 		timezone,
 		oddate] = line.split('\t');
 	const country = getCountryName(countrycode);
-	cities[name] = { country, latitude, longitude, timezone, cc: countrycode };
+	cities[`${name} (${countrycode})`] = { country, latitude, longitude, timezone, cc: countrycode };
 }
 
-fs.writeFileSync('src/citynames.js', `export const citynames = ${JSON.stringify(Object.keys(cities).map(name => `${name} (${cities[name].cc})`))};`);
+fs.writeFileSync('src/citynames.js', `export const citynames = ${JSON.stringify(Object.keys(cities))}`);
 fs.writeFileSync('src/cities.js', `export const cities = ${JSON.stringify(cities)};`);
