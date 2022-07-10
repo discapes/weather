@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as readline from 'readline';
 import { getCountryName } from './countrycodes.js';
 
-const DEV = true;
+const DEV = false;
 
 const stream = fs.createReadStream('data.txt');
 const rl = readline.createInterface({ input: stream, });

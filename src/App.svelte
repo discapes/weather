@@ -10,8 +10,6 @@
   let selected = false;
 
   onMount(() => {
-    cityName = "Andorra la Vella (AD)";
-    showData();
     ac = new autoComplete({
       placeHolder: "Search for cities...",
       data: {
@@ -269,34 +267,38 @@
   }
 </script>
 
-<div class="overflow-auto bg-gradient-to-r from-purple-100 to-pink-100 h-screen">
-  <div class="inline-flex p-10 flex flex-col items-center min-w-full">
+<div class="overflow-y-auto overflow-x-hidden bg-gradient-to-r from-purple-100 to-pink-100 h-screen">
+  <div class="flex flex-col items-center p-10 pb-0">
     <h2>Select a city: <span class:green={selected}>{cityName}</span></h2>
     <input id="autoComplete" placeholder="Enter city" bind:value={cityName} on:keydown={kd} />
-    {#if data}
-      <div class="flex m-3 flex-wrap justify-center">
-        <div class="border-black border p-2 m-3">
+  </div>
+  {#if data}
+    <div class="flex flex-wrap justify-center m-3">
+      <div class="sm:basis-1/2">
+        <div class="border-black border p-2 m-3 inline-block float-right">
           <p class="m-px">Country: {data.country}</p>
           <p class="m-px">Latitude: {data.latitude}</p>
           <p class="m-px">Longitude: {data.longitude}</p>
           <p class="m-px">Local time: {formatHHMMSSDDMMYY(new Date(data.localtime.getTime() + dataAge * 1000))}</p>
         </div>
-        <div class="m-3 flex items-start flex-col">
-          <h3 class="w-full m-pxx">Current weather</h3>
-          <h4 class="m-px">{weatherCodeToString(data.current_weather.weathercode)}</h4>
-          <p class="m-px">Temperature: {data.current_weather.temperature}°C</p>
-          <p class="m-px">Wind speed: {data.current_weather.windspeed} km/h</p>
-          <div>
-            <p class="m-px inline">Wind direction: {degreesToDirection(data.current_weather.winddirection)}</p>
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/1/12/Right_arrow.svg"
-              class="w-5 inline align-sub"
-              style={`transform: rotate(${data.current_weather.winddirection - 90}deg)`} />
-          </div>
+      </div>
+      <div class="sm:basis-1/2 flex items-start flex-col">
+        <h3 class="w-full m-pxx">Current weather</h3>
+        <h4 class="m-px">{weatherCodeToString(data.current_weather.weathercode)}</h4>
+        <p class="m-px">Temperature: {data.current_weather.temperature}°C</p>
+        <p class="m-px">Wind speed: {data.current_weather.windspeed} km/h</p>
+        <div>
+          <p class="m-px inline">Wind direction: {degreesToDirection(data.current_weather.winddirection)}</p>
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/1/12/Right_arrow.svg"
+            class="w-5 inline align-sub"
+            style={`transform: rotate(${data.current_weather.winddirection - 90}deg)`} />
         </div>
       </div>
-      <div class="inline-flex justify-center">
-        <table>
+    </div>
+    <div class="flex justify-center w-screen px-10">
+      <div class="overflow-auto">
+        <table class="">
           <tr>
             <th
               >Day<br /><span class="text-sd text-neutral-500 font-normal"
@@ -305,9 +307,15 @@
                 sunset</span
               ></th>
             {#each new Array(24).fill(0) as _, i}
-              <th>
-                {String(i).padStart(2, "0")}:00
-              </th>
+              {#if i === data.localtime.getHours()}
+                <th class="bg-[#ffffff50]">
+                  {String(i).padStart(2, "0")}:00
+                </th>
+              {:else}
+                <th>
+                  {String(i).padStart(2, "0")}:00
+                </th>
+              {/if}
             {/each}
           </tr>
           {#each data.days as day}
@@ -337,8 +345,12 @@
           {/each}
         </table>
       </div>
-      <span><br />Data from <a href="https://open-meteo.com/">open-meteo.com</a></span>
-    {/if}
+    </div>
+  {/if}
+  <div class="text-center pb-5">
+    <br />Displayed are temperature, apparent temperature and humidity.
+    <br />Weather data from <a target="_blank" href="https://open-meteo.com/">open-meteo.com.</a>
+    <br />City location and timezone data from <a target="_blank" href="https://www.geonames.org/">geonames.org.</a>
   </div>
 </div>
 
